@@ -1,3 +1,53 @@
+/* common */
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'rosario', sans-serif;
+}
+
+@font-face {
+    font-family: 'rosario';
+    src: url('assets/fonts/Rosario-VariableFont_wght.ttf');
+}
+
+
+main{
+    width: 85%;
+    font-family: 'rosario', sans-serif;
+}
+
+h3{
+    font-size: 48px;
+    font-weight: 700;
+}
+
+.form{
+    margin-top: 80px;
+}
+main input, select {
+    width: 400px !important;
+    width: fit-content;
+    margin: 20px;
+}
+main input, select::placeholder {
+    font-family: 'rosario', sans-serif
+}
+main select{
+    margin-left: 20px;
+}
+
+button{
+    margin: auto;
+}
+
+/* search.php */
+
+.search-bar{
+    height: fit-content;
+    padding: 50px;
+}
+
 .pimage{
     width: 50%;
     height: 50%;

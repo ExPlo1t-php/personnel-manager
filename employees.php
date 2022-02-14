@@ -5,15 +5,15 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="index.css">
+    <link rel="stylesheet" href="table.css">
+    <!-- <link rel="stylesheet" href="index.css"> -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
     <link rel="stylesheet" href="assets/fonts/fontawesome-free-6.0.0-web/css/all.css">
-    <link rel="stylesheet" href="table.css">
-    <title>Gestionnaire Du Personnel | Employees</title>
+    <title>Personnel Manager | Employees</title>
 </head>
 <body class="w-100 bg-dark">
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
-            <a class="navbar-brand" href="#">Gestionnaire</a>
+            <a class="navbar-brand" href="#">Manager</a>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
@@ -24,10 +24,10 @@
                         <a class="nav-link" href="index.php">Home  </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="search.php">Recherche </a>
+                        <a class="nav-link" href="search.php">Search </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="employees.php">employees<span class="sr-only">(actuel)</span></a>
+                        <a class="nav-link" href="employees.php">Employees<span class="sr-only">(actuel)</span></a>
                     </li>
                     <!-- <li class="nav-item">
                         <a class="nav-link" href="#">Link</a>
@@ -38,45 +38,110 @@
         </div>
     </nav>
     <main class="container">
+
+
+    <?php
+     //establishing connection with the database
+     //database details
+        $host = "localhost";
+        $username = "formdb_user";
+        $password = "slayer101";
+        $dbname = "personnel";
+        //creating connection 
+        $con = mysqli_connect($host, $username, $password, $dbname);
+        if (!$con)
+        {
+            die("Connection failed!" . mysqli_connect_error());
+        }
+        //checking connection status
+        // fetching data from the database
+        $sql = "SELECT id, fname, lname, dateOfBirth, department,  salary, fonction, photo FROM form_entries ";
+        $query = mysqli_query($con, $sql);
+        if($query)
+        {
+            echo "<script>console.log('fetched data sucessfully Successfully ');</script>";
+        }else{
+            
+            echo "<script>console.log('connection failed ');</script>";
+
+        }
+        //connection closed.
+        mysqli_close($con);
+        
+    ?>
         <div>
             <table class="table table-bordered table-light">
                 <thead >
                     <tr>
                         <th>Image</th>
-                        <th>Matricule</th>
-                        <th>Nom</th>
-                        <th>Prenom</th>
-                        <th>Date <br> de naissance</th>
-                        <th> Departement</th>
-                        <th>Salaire</th>
-                        <th>Fonction</th>
+                        <th>Registration Number</th>
+                        <th>Last Name</th>
+                        <th>First Name</th>
+                        <th>Date <br> Of Birth</th>
+                        <th> Department</th>
+                        <th>Salary</th>
+                        <th>Office</th>
                         <th>Options</th>
                     </tr>
                 </thead>
+                <?php
+                //deleting row from database
+                if(isset($_POST['delete'])){
+                    //establishing connection with the database
+                    //database details
+                    global $host, $username, $password, $dbname;
+                    //creating connection 
+                    $con = mysqli_connect($host, $username, $password, $dbname);
+                    if (!$con){
+                         die("Connection failed!" . mysqli_connect_error());}
+                    //checking connection status
+                    // deleting data from the database
+                    $val = $_POST['delete'];
+                    $sql = "DELETE FROM form_entries WHERE id=$val";
+                    $query = mysqli_query($con, $sql);
+                    if($con->query($sql) === TRUE){
+                        echo "\n<script>console.log('Record deleted successfully ');</script>";
+                    }else{
+                        echo "\n<script>console.log('Error deleting record: ".$con->error." ');</script>";
+                        
+                    }
+                    //connection closed.
+                    mysqli_close($con);
+                    header("Location: employees.php"); 
+                    exit(); 
+                }
+        
+    ?>
 
                 <tbody>
+            
+                    <?php
+                    if (mysqli_num_rows($query) > 0) {
+                    $i=0;
+                    while($row = mysqli_fetch_array($query)) {
+                    ?>
                     <tr>
-                        <td><img class="pimage" src="assets/images/george.jpeg" ></td>
-                        <td>Matricule</td>
-                        <td>Nom</td>
-                        <td>Prenom</td>
-                        <td>Date <br> de naissance</td>
-                        <td> Departement</td>
-                        <td>Salaire</td>
-                        <td>Fonction</td>
-                        <td><button><i class="fa-solid fa-pen"></i></button><button><i class="fa-solid fa-trash-can"></i></button></td>
+                        <td><img class="pimage" src="<?php echo "assets/images/employees/george.jpeg"; ?>"></td>
+                        <td><?php echo $row["id"]; ?></td>
+                        <td><?php echo $row["fname"]; ?></td>
+                        <td><?php echo $row["lname"]; ?></td>
+                        <td><?php echo $row["dateOfBirth"]; ?></td>
+                        <td><?php echo $row["department"]; ?></td>
+                        <td><?php echo $row["salary"].' MAD'; ?></td>
+                        <td><?php echo $row["fonction"]; ?></td>
+                        <td><form action="edit.php" method="post"><button class="btn btn-dark" name="edit" type="submit" ><i class="fa-solid fa-pen edit"></i></button></form>
+                        <form action="employees.php" method="post"><button class="btn btn-dark" type="submit" name="delete" value="<?php echo $row['id'];?>"><i class="fa-solid fa-trash-can delete"></i></button></form></td>;
                     </tr>
-                    <tr>
-                        <td><img class="pimage" src="assets/images/george.jpeg" ></td>
-                        <td>Matricule</td>
-                        <td>Nom</td>
-                        <td>Prenom</td>
-                        <td>Date <br> de naissance</td>
-                        <td> Departement</td>
-                        <td>Salaire</td>
-                        <td>Fonction</td>
-                        <td><button><i class="fa-solid fa-pen"></i></button><button><i class="fa-solid fa-trash-can"></i></button></td>
-                    </tr>
+                    <?php
+                    // $i++;
+                        }
+                    }
+                    else{
+                        echo '<script>console.log("No result found")</script>';
+                    }
+                    ?>
+
+
                 </tbody>
             </table>
         </div>

@@ -7,7 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="index.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
-    <title>Personnel Manager| Home</title>
+    <title>Personnel Manager | Home</title>
 </head>
 <body class="w-100 bg-dark">
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
@@ -19,7 +19,7 @@
             <div class="collapse navbar-collapse d-flex justify-content-around " id="navbarSupportedContent">
                 <ul class="navbar-nav mr-auto ">
                     <li class="nav-item active">
-                        <a class="nav-link" href="index.php">Home <span class="sr-only">(actuel)</span></a>
+                        <a class="nav-link" href="index.php">Home <span class="sr-only">(Current)</span></a>
                     </li>
                     <li class="nav-item" >
                         <a class="nav-link" href="search.php">Search </a>
@@ -27,59 +27,57 @@
                     <li class="nav-item">
                         <a class="nav-link" href="employees.php">employees</a>
                     </li>
-                    <!-- <li class="nav-item">
-                        <a class="nav-link" href="#">Link</a>
-                    </li> -->
-                    
                 </ul>
 
         </div>
     </nav>
 
     <main class="container bg-light">
-    <h3 class="text-center">Add A New Employee</h3>
+    <h3 class="text-center">Personnel Manager</h3>
     <div class="form d-flex flex-row justify-content-center"> 
-        <form action="index.php" method="post" enctype="multipart/form-data">
+        <form action="edit.php" method="post" enctype="multipart/form-data">
         <?php  
-//getting inputs values
-if(isset($_POST['submit'])){
+//establishing connection with the database
+//database details
+$host = "localhost";
+$username = "formdb_user";
+$password = "slayer101";
+$dbname = "personnel";
+//creating connection 
+$con = mysqli_connect($host, $username, $password, $dbname);
+//checking connection status\
+$sql = "SELECT id, fname, lname, dateOfBirth, department,  salary, fonction, photo FROM form_entries ";
+$query = mysqli_query($con, $sql);
+$row = mysqli_fetch_assoc($query);
+if($query)
+{
+   echo "\n<script>console.log('fetched data Successfully ');</script>";
+}else{
+    echo "\n<script>console.log('connection failed ');</script>";
+
+}
+
+if (!$con)
+{
+    die("Connection failed!" . mysqli_connect_error());
+}
+
+
+       if(isset($_POST['submit'])){
         $id = $_POST['id'];
         $lname = $_POST['lname'];
         $fname = $_POST['fname'];
         $date = $_POST['date'];
         $department = $_POST['department'];
-        $Salary = $_POST['Salary'];
+        $Salary = $_POST['salary'];
         $fn = $_POST['fn'];
 
-    //     //image name value as it was stored on the user
-    //     $img = $_POST['img'];
-    //    //  $imgname = $_FILES['img']['name'];
-    //     $imgname = $imgpath . basename($_FILES["img"]["name"]);
-    //     //Stores the filetype e.g image/jpeg
-    //    //  $imgtype = $_FILES['img']['type'];
-    //     $imgtype = strtolower(pathinfo($imgname,PATHINFO_EXTENSION));
-    //     //Stres any error codes from the upload.
-    //     $imgerror = $_FILES['img']['error'];
-    //     //Stores the tempname as it is given by the host when uploaded.
-    //     $imgtemp = $_FILES['img']['tmp_name'];
-        
-    //     //The path you wish to upload the image to
-    //     $imgpath = "assets/images/employees/";
-        
-        
-        //establishing connection with the database
-        //database details
-       $host = "localhost";
-       $username = "formdb_user";
-       $password = "slayer101";
-       $dbname = "personnel";
-       //creating connection 
-       $con = mysqli_connect($host, $username, $password, $dbname);
-       //checking connection status
-       if (!$con)
-       {
-           die("Connection failed!" . mysqli_connect_error());
-       }
+        global $host, $username, $password, $dbname;
+        //creating connection 
+        $con = mysqli_connect($host, $username, $password, $dbname);
+        if (!$con){
+             die("Connection failed!" . mysqli_connect_error());}
+
        // form input >> database
        $sql = "INSERT INTO form_entries (id, fname, lname, dateOfBirth, department,  salary, fonction, photo) VALUES ('$id', '$lname', '$fname', '$date', '$department', '$Salary', '$fn', '$imgname')";
        
@@ -87,24 +85,45 @@ if(isset($_POST['submit'])){
        if($rs)
        {
               echo "\n<script>console.log('Successfully saved');</script>";
+              echo "\n<script>console.log(".$rs.");</script>";
        }
-     //connection closed.
-     mysqli_close($con);
+
+       //checking connection status
+       // deleting data from the database
+       $oldid = $row["id"];
+       $sql = "DELETE FROM form_entries WHERE id=$oldid";
+       $query = mysqli_query($con, $sql);
+       if($con->query($sql) === TRUE){
+           echo "\n<script>console.log('Record deleted successfully ');</script>";
+       }else{
+           echo "\n<script>console.log('Error deleting record: ".$con->error." ');</script>";
+           
+       }
+       //connection closed.
+       mysqli_close($con);
+       header("Location: employees.php"); 
+       exit(); 
+        
 }
+
+
+
+if (mysqli_num_rows($query) > 0) {
 
 ?>
 
-            <label >Registration number</label>
-            <input name="id" class="matricule form-control" type="text" placeholder="Enter the registration number" value="" >
+            <label >registration number</label>
+            <input name="id" class="registration number form-control" type="text" placeholder="Enter the registration number" value="<?php echo $row["id"]; ?>" >
             <label >First Name</label>
-            <input name="fname" class="fname form-control" type="text" placeholder="Enter the First Name" value="" required>
+            <input name="fname" class="fname form-control" type="text" placeholder="Enter the First Name" value="<?php echo $row["fname"]; ?>" required>
             <label >Last Name</label>
-            <input name="lname"  class="lname form-control" type="text" placeholder="Enter the Last Name" value="" required>
+            <input name="lname"  class="lname form-control" type="text" placeholder="Enter the Last Name" value="<?php echo $row["lname"]; ?>" required>
             <label >Date Of Birth</label>
-            <input name="date" class="date form-control" type="date" value="" required> 
+            <input name="date" class="date form-control" type="date" value="<?php echo $row["dateOfBirth"]; ?>" required> 
             <label >Department</label>
-            <select name="department" class="depart form-control"  required>
-                <option value="" disabled selected>- select department -</option>
+            <select name="department" class="depart form-control" required >
+                echo "<option value="<?php echo $row["department"]; ?>" selected disabled hidden><?php echo $row["department"]; ?></option>";
+                <option value="" disabled >- select department -</option>
                 <option value="IT">IT</option>
                 <option value="Human Resources">Human Resources</option>
                 <option value="Production">Production</option>
@@ -112,18 +131,19 @@ if(isset($_POST['submit'])){
                 <option value="Accounting and finance">Accounting and finance</option>
                 <option value="Quality">Quality</option>
                 <option value="Maintenance">Maintenance</option>
-                <option value="logistics">logistics</option>
+                <option value="Logistics">Logistics</option>
             </select>
             <label >Salary</label>
-            <input name="Salary" type="text" placeholder="Salary" class="Salary form-control" value="" required>
-            <label >Office</label>
-                <input name="fn" type="text" placeholder="Office" class="fonction form-control" value="" required>
+            <input name="salary" type="text" placeholder="Salary" class="Salary form-control" value="<?php echo $row["salary"]; ?>" required>
+            <label >Fonction</label>
+                <input name="fn" type="text" placeholder="Fonction" class="fonction form-control" value="<?php echo $row["fonction"]; ?>" required>
                 <label for="img">Select image:</label>
                 <input name="img" type="file" id="img" accept="image/*" >
                 <div class="d-flex justify-content-center ">
                     <input type="submit" name="submit" class="btn btn-dark" value="submit"> 
                 </div>
             </form>
+            <?php }?>
         </div>
     </main>
     
