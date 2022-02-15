@@ -41,32 +41,18 @@
 
 
     <?php
-     //establishing connection with the database
-     //database details
-        $host = "localhost";
-        $username = "formdb_user";
-        $password = "slayer101";
-        $dbname = "personnel";
-        //creating connection 
-        $con = mysqli_connect($host, $username, $password, $dbname);
-        if (!$con)
-        {
-            die("Connection failed!" . mysqli_connect_error());
-        }
-        //checking connection status
+        include 'connection.php';
         // fetching data from the database
         $sql = "SELECT id, fname, lname, dateOfBirth, department,  salary, fonction, photo FROM form_entries ";
         $query = mysqli_query($con, $sql);
         if($query)
         {
-            echo "<script>console.log('fetched data sucessfully Successfully ');</script>";
+            echo "<script>console.log('fetched data successfully');</script>";
         }else{
             
             echo "<script>console.log('connection failed ');</script>";
 
         }
-        //connection closed.
-        mysqli_close($con);
         
     ?>
         <div>
@@ -87,17 +73,9 @@
                 <?php
                 //deleting row from database
                 if(isset($_POST['delete'])){
-                    //establishing connection with the database
-                    //database details
-                    global $host, $username, $password, $dbname;
-                    //creating connection 
-                    $con = mysqli_connect($host, $username, $password, $dbname);
-                    if (!$con){
-                         die("Connection failed!" . mysqli_connect_error());}
-                    //checking connection status
                     // deleting data from the database
                     $val = $_POST['delete'];
-                    $sql = "DELETE FROM form_entries WHERE id=$val";
+                    $sql = "DELETE FROM form_entries WHERE id='$val'";
                     $query = mysqli_query($con, $sql);
                     if($con->query($sql) === TRUE){
                         echo "\n<script>console.log('Record deleted successfully ');</script>";
@@ -133,7 +111,7 @@
                         <form action="employees.php" method="post"><button class="btn btn-dark" type="submit" name="delete" value="<?php echo $row['id'];?>"><i class="fa-solid fa-trash-can delete"></i></button></form></td>;
                     </tr>
                     <?php
-                    // $i++;
+                    $i++;
                         }
                     }
                     else{

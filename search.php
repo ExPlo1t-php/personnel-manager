@@ -42,22 +42,10 @@
 
 
         <?php
+        include 'connection.php';
             $filter = $_POST['filter'];
             $search = $_POST['search'];
-                 //establishing connection with the database
-                //database details
-        $host = "localhost";
-        $username = "formdb_user";
-        $password = "slayer101";
-        $dbname = "personnel";
-        //creating connection 
-        $con = mysqli_connect($host, $username, $password, $dbname);
-        if (!$con)
-        {
-            die("Connection failed!" . mysqli_connect_error());
-        }
-        //checking connection status
-        // fetching data from the database
+       
         $sql = "SELECT id, fname, lname, dateOfBirth, department,  salary, fonction, photo FROM form_entries ";
         $query = mysqli_query($con, $sql);
         if($query)
@@ -107,15 +95,6 @@
                 <?php
                 //deleting row from database
                 if(isset($_POST['delete'])){
-                    //establishing connection with the database
-                    //database details
-                    global $host, $username, $password, $dbname;
-                    //creating connection 
-                    $con = mysqli_connect($host, $username, $password, $dbname);
-                    if (!$con){
-                         die("Connection failed!" . mysqli_connect_error());}
-                    //checking connection status
-                    // deleting data from the database
                     $val = $_POST['delete'];
                     $sql = "DELETE FROM form_entries WHERE id=$val";
                     $query = mysqli_query($con, $sql);
