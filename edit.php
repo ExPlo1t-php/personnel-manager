@@ -36,84 +36,59 @@
     <main class="container bg-light">
     <h3 class="text-center">Personnel Manager</h3>
     <div class="form d-flex flex-row justify-content-center"> 
-        <form action="edit.php" method="post" enctype="multipart/form-data">
+        <form action="edit.php" method="post" >
         <?php  
-//establishing connection with the database
-//database details
-$host = "localhost";
-$username = "formdb_user";
-$password = "slayer101";
-$dbname = "personnel";
-//creating connection 
-$con = mysqli_connect($host, $username, $password, $dbname);
-//checking connection status\
-$sql = "SELECT id, fname, lname, dateOfBirth, department,  salary, fonction, photo FROM form_entries ";
-$query = mysqli_query($con, $sql);
-$row = mysqli_fetch_assoc($query);
-if($query)
-{
-   echo "\n<script>console.log('fetched data Successfully ');</script>";
-}else{
-    echo "\n<script>console.log('connection failed ');</script>";
+            $j;
+            include 'connection.php';
+            session_start();
+            $j = $_POST['edit'];
+            $sql = "SELECT id, fname, lname, dateOfBirth, department,  salary, fonction, photo FROM form_entries WHERE id='$j'";
+            echo $sql;
+            $query = mysqli_query($con, $sql);
+            $row = mysqli_fetch_assoc($query);
+            if($query)
+            {
+                echo "\n<script>console.log('fetched data Successfully ');</script>";
+            }else{
+                echo "\n<script>console.log('connection failed ');</script>";
+                
+            }
 
-}
-
-if (!$con)
-{
-    die("Connection failed!" . mysqli_connect_error());
-}
-
-
-       if(isset($_POST['submit'])){
-        $id = $_POST['id'];
-        $lname = $_POST['lname'];
-        $fname = $_POST['fname'];
-        $date = $_POST['date'];
-        $department = $_POST['department'];
-        $Salary = $_POST['salary'];
-        $fn = $_POST['fn'];
-
-        global $host, $username, $password, $dbname;
-        //creating connection 
-        $con = mysqli_connect($host, $username, $password, $dbname);
-        if (!$con){
-             die("Connection failed!" . mysqli_connect_error());}
-
-       // form input >> database
-       $sql = "INSERT INTO form_entries (id, fname, lname, dateOfBirth, department,  salary, fonction, photo) VALUES ('$id', '$lname', '$fname', '$date', '$department', '$Salary', '$fn', '$imgname')";
-       
-       $rs = mysqli_query($con, $sql);
-       if($rs)
-       {
-              echo "\n<script>console.log('Successfully saved');</script>";
-              echo "\n<script>console.log(".$rs.");</script>";
-       }
-
-       //checking connection status
-       // deleting data from the database
-       $oldid = $row["id"];
-       $sql = "DELETE FROM form_entries WHERE id=$oldid";
-       $query = mysqli_query($con, $sql);
-       if($con->query($sql) === TRUE){
-           echo "\n<script>console.log('Record deleted successfully ');</script>";
-       }else{
-           echo "\n<script>console.log('Error deleting record: ".$con->error." ');</script>";
-           
-       }
-       //connection closed.
-       mysqli_close($con);
-       header("Location: employees.php"); 
-       exit(); 
-        
-}
+            if(isset($_POST['submit'])){
+            $di = $row['id'];
+            
+            $id = htmlspecialchars( $_POST['id']);
+                $lname = htmlspecialchars($_POST['lname']);
+                $fname = htmlspecialchars($_POST['fname']);
+                $date = htmlspecialchars($_POST['date']);
+                $department = htmlspecialchars($_POST['department']);
+                $Salary = $_POST['salary'];
+                $fn = htmlspecialchars($_POST['fn']);
+                
+                //creating connection 
+                $sql = "UPDATE form_entries SET id ='$id', fname='$fname', lname='$lname', dateOfBirth='$date', department='$department',  salary='$Salary', fonction='$fn' WHERE id='$'";
+                echo'<h1>'.$_POST['edit'].$sql.'</h1>' ;
+                    if ($con->query($sql) === TRUE) {
+                        echo "Record updated successfully";
+                    } else {
+                        echo "Error updating record: " . $conn->error;
+                    }
+                
+                    // header("Location: employees.php"); 
+                    // exit(); 
+                    //connection closed.
+                mysqli_close($con);
+            
+        }
+            
+            
 
 
 
 if (mysqli_num_rows($query) > 0) {
+    ?>
 
-?>
-
-            <label >registration number</label>
+<label >registration number</label>
             <input name="id" class="registration number form-control" type="text" placeholder="Enter the registration number" value="<?php echo $row["id"]; ?>" >
             <label >First Name</label>
             <input name="fname" class="fname form-control" type="text" placeholder="Enter the First Name" value="<?php echo $row["fname"]; ?>" required>

@@ -89,13 +89,13 @@
                     exit(); 
                 }
         
-    ?>
+                ?>
 
                 <tbody>
             
                     <?php
                     if (mysqli_num_rows($query) > 0) {
-                    $i=0;
+                    $i=$row['id'];
                     while($row = mysqli_fetch_array($query)) {
                     ?>
                     <tr>
@@ -107,11 +107,10 @@
                         <td><?php echo $row["department"]; ?></td>
                         <td><?php echo $row["salary"].' MAD'; ?></td>
                         <td><?php echo $row["fonction"]; ?></td>
-                        <td><form action="edit.php" method="post"><button class="btn btn-dark" name="edit" type="submit" ><i class="fa-solid fa-pen edit"></i></button></form>
+                        <td><form action="edit.php" method="post"><button class="btn btn-dark" name="edit" type="submit" name="edit" value="<?php echo $row['id'];?>"><i class="fa-solid fa-pen edit"></i></button></form>
                         <form action="employees.php" method="post"><button class="btn btn-dark" type="submit" name="delete" value="<?php echo $row['id'];?>"><i class="fa-solid fa-trash-can delete"></i></button></form></td>;
                     </tr>
                     <?php
-                    $i++;
                         }
                     }
                     else{
