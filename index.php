@@ -39,34 +39,44 @@
     <main class="container bg-light">
     <h3 class="text-center">Add A New Employee</h3>
     <div class="form d-flex flex-row justify-content-center"> 
-        <form action="index.php" method="post" enctype="multipart/form-data">
+        <form action="index.php" method="post" enctype="multipart/form-data" >
             <?php  
 include 'connection.php';
 //getting inputs values
 if(isset($_POST['submit'])){
-        $id = $_POST['id'];
+    $id = $_POST['id'];
         $lname = $_POST['lname'];
         $fname = $_POST['fname'];
         $date = $_POST['date'];
         $department = $_POST['department'];
         $Salary = $_POST['Salary'];
         $fn = $_POST['fn'];
-
-       // form input >> database
-       $sql = "INSERT INTO form_entries (id, fname, lname, dateOfBirth, department,  salary, fonction, photo) VALUES ('$id', '$lname', '$fname', '$date', '$department', '$Salary', '$fn', '$imgname')";
-       
-       $rs = mysqli_query($con, $sql);
-       if($rs)
-       {
-              echo "<script>console.log('Successfully saved');</script>";
-       }
+        $img = $_FILES['img'];
+        $imgname = $img["name"];
+        $tempfile = $img["tmp_name"];
+        $uploaddir = 'assets/images/';
+        $file = $uploaddir.$imgname;
+        move_uploaded_file($tempfile, "img/$imgname");
+        
+        
+        // form input >> database
+        $sql = "INSERT INTO form_entries (id, fname, lname, dateOfBirth, department,  salary, fonction, photo) VALUES ('$id', '$lname', '$fname', '$date', '$department', '$Salary', '$fn', '$file')";
+        
+        $rs = mysqli_query($con, $sql);
+            echo '<h1>'.$tempfile.'</h1><p>'.$imgname.'</p><p>'.$file.'</p>';
+            
+            if($rs)
+            {
+                echo "<script>console.log('Successfully saved');</script>";
+            }
+            
      //connection closed.
      mysqli_close($con);
 }
 
 ?>
 
-            <label >Registration number</label>
+<label >Registration number</label>
             <input name="id" class="matricule form-control" type="text" placeholder="Enter the registration number" value="" >
             <label >First Name</label>
             <input name="fname" class="fname form-control" type="text" placeholder="Enter the First Name" value="" required>
@@ -91,7 +101,7 @@ if(isset($_POST['submit'])){
             <label >Office</label>
                 <input name="fn" type="text" placeholder="Office" class="fonction form-control" value="" required>
                 <label for="img">Select image:</label>
-                <input name="img" type="file" id="img" accept="image/*" >
+                <input name="img" type="file" >
                 <div class="d-flex justify-content-center ">
                     <input type="submit" name="submit" class="btn btn-dark" value="submit"> 
                 </div>

@@ -43,7 +43,6 @@
             session_start();
             $j = $_POST['edit'];
             $sql = "SELECT id, fname, lname, dateOfBirth, department,  salary, fonction, photo FROM form_entries WHERE id='$j'";
-            echo $sql;
             $query = mysqli_query($con, $sql);
             $row = mysqli_fetch_assoc($query);
             if($query)
@@ -53,11 +52,10 @@
                 echo "\n<script>console.log('connection failed ');</script>";
                 
             }
-
-            if(isset($_POST['submit'])){
-            $di = $row['id'];
             
-            $id = htmlspecialchars( $_POST['id']);
+            if(isset($_POST['submit'])){
+                $j = $_POST['id'];
+                $id = htmlspecialchars( $_POST['id']);
                 $lname = htmlspecialchars($_POST['lname']);
                 $fname = htmlspecialchars($_POST['fname']);
                 $date = htmlspecialchars($_POST['date']);
@@ -66,9 +64,9 @@
                 $fn = htmlspecialchars($_POST['fn']);
                 
                 //creating connection 
-                $sql = "UPDATE form_entries SET id ='$id', fname='$fname', lname='$lname', dateOfBirth='$date', department='$department',  salary='$Salary', fonction='$fn' WHERE id='$'";
-                echo'<h1>'.$_POST['edit'].$sql.'</h1>' ;
-                    if ($con->query($sql) === TRUE) {
+                $sql = "UPDATE form_entries SET id ='$id', fname='$fname', lname='$lname', dateOfBirth='$date', department='$department',  salary='$Salary', fonction='$fn' WHERE id='$j'";
+                    echo $sql;
+                if ($con->query($sql) === TRUE) {
                         echo "Record updated successfully";
                     } else {
                         echo "Error updating record: " . $conn->error;
@@ -76,7 +74,7 @@
                 
                     // header("Location: employees.php"); 
                     // exit(); 
-                    //connection closed.
+                //connection closed.
                 mysqli_close($con);
             
         }
@@ -116,7 +114,7 @@ if (mysqli_num_rows($query) > 0) {
                 <label for="img">Select image:</label>
                 <input name="img" type="file" id="img" accept="image/*" >
                 <div class="d-flex justify-content-center ">
-                    <input type="submit" name="submit" class="btn btn-dark" value="submit"> 
+                    <input type="submit" name="submit" class="btn btn-dark" value="submit" > 
                 </div>
             </form>
             <?php }?>

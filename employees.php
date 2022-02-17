@@ -77,12 +77,12 @@
                     $val = $_POST['delete'];
                     $sql = "DELETE FROM form_entries WHERE id='$val'";
                     $query = mysqli_query($con, $sql);
-                    if($con->query($sql) === TRUE){
-                        echo "\n<script>console.log('Record deleted successfully ');</script>";
-                    }else{
-                        echo "\n<script>console.log('Error deleting record: ".$con->error." ');</script>";
+                    // if($con->query($sql) === TRUE){
+                    //     echo "\n<script>console.log('Record deleted successfully ');</script>";
+                    // }else{
+                    //     echo "\n<script>console.log('Error deleting record: ".$con->error." ');</script>";
                         
-                    }
+                    // }
                     //connection closed.
                     mysqli_close($con);
                     header("Location: employees.php"); 
@@ -99,7 +99,7 @@
                     while($row = mysqli_fetch_array($query)) {
                     ?>
                     <tr>
-                        <td><img class="pimage" src="<?php echo "assets/images/employees/george.jpeg"; ?>"></td>
+                        <td><img class="pimage" src="<?php echo $row['photo']; ?>"></td>
                         <td><?php echo $row["id"]; ?></td>
                         <td><?php echo $row["fname"]; ?></td>
                         <td><?php echo $row["lname"]; ?></td>
@@ -108,14 +108,14 @@
                         <td><?php echo $row["salary"].' MAD'; ?></td>
                         <td><?php echo $row["fonction"]; ?></td>
                         <td><form action="edit.php" method="post"><button class="btn btn-dark" name="edit" type="submit" name="edit" value="<?php echo $row['id'];?>"><i class="fa-solid fa-pen edit"></i></button></form>
-                        <form action="employees.php" method="post"><button class="btn btn-dark" type="submit" name="delete" value="<?php echo $row['id'];?>"><i class="fa-solid fa-trash-can delete"></i></button></form></td>;
+                        <form action="employees.php" method="post"><button class="btn btn-dark" type="submit" name="delete" value="<?php echo $row['id'];?>"><i class="fa-solid fa-trash-can delete"></i></button></form></td>
                     </tr>
                     <?php
                         }
                     }
-                    else{
-                        echo '<script>console.log("No result found")</script>';
-                    }
+                    // else{
+                    //     echo '<script>console.log("No result found")</script>';
+                    // }
                     ?>
 
 
