@@ -99,7 +99,7 @@
                     while($row = mysqli_fetch_array($query)) {
                     ?>
                     <tr>
-                        <td><img class="pimage" src="<?php echo $row['photo']; ?>"></td>
+                        <td><img class="pimage" src="<?php echo "assets/images/george.jpeg"; ?>"></td>
                         <td><?php echo $row["id"]; ?></td>
                         <td><?php echo $row["fname"]; ?></td>
                         <td><?php echo $row["lname"]; ?></td>

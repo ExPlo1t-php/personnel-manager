@@ -40,8 +40,7 @@
         <?php  
             $j;
             include 'connection.php';
-            session_start();
-            $j = $_POST['edit'];
+            $j = $_REQUEST['edit'];
             $sql = "SELECT id, fname, lname, dateOfBirth, department,  salary, fonction, photo FROM form_entries WHERE id='$j'";
             $query = mysqli_query($con, $sql);
             $row = mysqli_fetch_assoc($query);
@@ -52,9 +51,7 @@
                 echo "\n<script>console.log('connection failed ');</script>";
                 
             }
-            
             if(isset($_POST['submit'])){
-                $j = $_POST['id'];
                 $id = htmlspecialchars( $_POST['id']);
                 $lname = htmlspecialchars($_POST['lname']);
                 $fname = htmlspecialchars($_POST['fname']);

@@ -44,7 +44,7 @@
 include 'connection.php';
 //getting inputs values
 if(isset($_POST['submit'])){
-    $id = $_POST['id'];
+        $id = $_POST['id'];
         $lname = $_POST['lname'];
         $fname = $_POST['fname'];
         $date = $_POST['date'];
@@ -56,14 +56,13 @@ if(isset($_POST['submit'])){
         $tempfile = $img["tmp_name"];
         $uploaddir = 'assets/images/';
         $file = $uploaddir.$imgname;
-        move_uploaded_file($tempfile, "img/$imgname");
+        move_uploaded_file($tempfile, '$file');
         
         
         // form input >> database
-        $sql = "INSERT INTO form_entries (id, fname, lname, dateOfBirth, department,  salary, fonction, photo) VALUES ('$id', '$lname', '$fname', '$date', '$department', '$Salary', '$fn', '$file')";
+        $sql = "INSERT INTO form_entries (id, fname, lname, dateOfBirth, department,  salary, fonction, photo) VALUES ('$id', '$lname', '$fname', '$date', '$department', '$Salary', '$fn', '$tempfile')";
         
         $rs = mysqli_query($con, $sql);
-            echo '<h1>'.$tempfile.'</h1><p>'.$imgname.'</p><p>'.$file.'</p>';
             
             if($rs)
             {
