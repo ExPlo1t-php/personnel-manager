@@ -41,39 +41,21 @@
         <div class="search-bar bg-light d-flex flex-column align-items-center justify-content-center">
 
 
-        <?php
-        include 'connection.php';
-            $filter = $_POST['filter'];
-            $search = $_POST['search'];
-       
-        $sql = "SELECT id, fname, lname, dateOfBirth, department,  salary, fonction, photo FROM form_entries ";
-        $query = mysqli_query($con, $sql);
-        if($query)
-        {
-            echo "<script>console.log('fetched data sucessfully Successfully ');</script>";
-        }else{
-            
-            echo "<script>console.log('connection failed ');</script>";
-
-        }
-        //connection closed.
-        mysqli_close($con);
-        ?>
-            <form action="" >
+            <form action="search.php" method="post" >
                 <label>Choose A Filter:</label>
                 <select name="filter" class="filter form-control">
                     <option value="" disabled selected>- select filter -</option>
-                    <option value="registration number">registration number</option>
-                    <option value="Last Name">Last Name</option>
-                    <option value="First Name">First Name</option>
+                    <option value="id">registration number</option>
+                    <option value="lname">Last Name</option>
+                    <option value="fname">First Name</option>
                     <option value="Department">Department</option>
                 </select>
                 <label>Search for an employee:</label>
             <input type="text" name="search" class="form-control " placeholder="Search for an employee">
+            <div class="d-flex justify-content-center">
+                <button type="submit" class="btn btn-dark">submit</button>
+            </div>
         </form>
-        <div class="d-flex justify-content-center">
-            <button type="submit" class="btn btn-dark">submit</button>
-        </div>
         </div>
 
         <div class="container-fluid">
@@ -92,40 +74,39 @@
                     </tr>
                 </thead>
 
-                <?php
-                //deleting row from database
-                if(isset($_POST['delete'])){
-                    $val = $_POST['delete'];
-                    $sql = "DELETE FROM form_entries WHERE id=$val";
-                    $query = mysqli_query($con, $sql);
-                    if($con->query($sql) === TRUE){
-                        echo "\n<script>console.log('Record deleted successfully ');</script>";
-                    }else{
-                        echo "\n<script>console.log('Error deleting record: ".$con->error." ');</script>";
-                        
-                    }
-                    //connection closed.
-                    mysqli_close($con);
-                    header("Location: employees.php"); 
-                    exit(); 
-                }
-        
-    ?>
 
                 <tbody>
 
-                    <tr >
-                        <td><img class="pimage" src="assets/images/employees/george.jpeg" ></td>
-                        <td>registration number</td>
-                        <td>Last Name</td>
-                        <td>First Name</td>
-                        <td>Date <br> de naissance</td>
-                        <td> Department</td>
-                        <td>Salaire</td>
-                        <td>Fonction</td>
-                        <td><form action="edit.php" method="post"><button class="btn btn-dark" name="edit" type="submit" ><i class="fa-solid fa-pen edit"></i></button></form>
-                        <form action="employees.php" method="post"><button class="btn btn-dark" type="submit" name="delete" value="<?php echo $row['id'];?>"><i class="fa-solid fa-trash-can delete"></i></button></form></td>;
+                    <?php
+                    include 'connection.php';
+                    if(isset($_POST['submit'])){
+                        $filter = $_POST['filter'];
+                        $search = $_POST['search'];
+                        $sql = "SELECT id, fname, lname, dateOfBirth, department,  salary, fonction, photo FROM form_entries WHERE $filter LIKE '$search'";            
+                        $query = mysqli_query($con, $sql);
+                    
+                
+                    if (mysqli_num_rows($query) > 0) {
+                        while($row = mysqli_fetch_array($query)) {
+                            ?>
+                    <tr>
+                        <td><img class="pimage" src="<?php echo $row['photo']; ?>"></td>
+                        <td><?php echo $row["id"]; ?></td>
+                        <td><?php echo $row["fname"]; ?></td>
+                        <td><?php echo $row["lname"]; ?></td>
+                        <td><?php echo $row["dateOfBirth"]; ?></td>
+                        <td><?php echo $row["department"]; ?></td>
+                        <td><?php echo $row["salary"].' MAD'; ?></td>
+                        <td><?php echo $row["fonction"]; ?></td>
+                        <td><form action="edit.php" method="post"><button class="btn btn-dark" name="edit" type="submit" name="edit" value="<?php echo $row['id'];?>"><i class="fa-solid fa-pen edit"></i></button></form>
+                        <form action="employees.php" method="post"><button class="btn btn-dark" type="submit" name="delete" "><i class="fa-solid fa-trash-can delete"></i></button></form></td>
                     </tr>
+                    <?php
+                        }
+                    }
+                }
+                ?>
+
                 </tbody>
             </table>
         </div>

@@ -29,68 +29,78 @@
                         <a class="nav-link" href="employees.php">employees</a>
                     </li>
                 </ul>
-
-        </div>
-    </nav>
-
-    <main class="container bg-light">
-    <h3 class="text-center">Personnel Manager</h3>
-    <div class="form d-flex flex-row justify-content-center"> 
-        <form action="edit.php" method="post" >
-        <?php  
-            $j;
-            include 'connection.php';
-            $j = $_REQUEST['edit'];
-            $sql = "SELECT id, fname, lname, dateOfBirth, department,  salary, fonction, photo FROM form_entries WHERE id='$j'";
-            $query = mysqli_query($con, $sql);
-            $row = mysqli_fetch_assoc($query);
-            if($query)
-            {
-                echo "\n<script>console.log('fetched data Successfully ');</script>";
-            }else{
-                echo "\n<script>console.log('connection failed ');</script>";
                 
-            }
-            if(isset($_POST['submit'])){
-                $id = htmlspecialchars( $_POST['id']);
+            </div>
+        </nav>
+        
+        <main class="container bg-light">
+            <h3 class="text-center">Personnel Manager</h3>
+            <div class="form d-flex flex-row justify-content-center"> 
+        <form action="edit.php" method="post" enctype="multipart/form-data">
+        <?php  
+        session_start();
+        include 'connection.php';
+        $_SESSION['reg'] = $_POST['edit'];
+        $i= $_SESSION['reg'];
+        $sql = "SELECT id, fname, lname, dateOfBirth, department,  salary, fonction, photo FROM form_entries WHERE id='$i'";
+        $query = mysqli_query($con, $sql);
+        $row = mysqli_fetch_assoc($query);
+        if($query)
+        {
+            echo "\n<script>console.log('fetched data Successfully ');</script>";
+        }else{
+            echo "\n<script>console.log('connection failed ');</script>";
+            
+        }
+        
+        if(isset($_POST['submit'])){
+            session_start();
+            $i =$_REQUEST['submit'];
                 $lname = htmlspecialchars($_POST['lname']);
                 $fname = htmlspecialchars($_POST['fname']);
                 $date = htmlspecialchars($_POST['date']);
                 $department = htmlspecialchars($_POST['department']);
                 $Salary = $_POST['salary'];
                 $fn = htmlspecialchars($_POST['fn']);
+                // $img = $_FILES['img'];
+                // $imgname = $img["name"];
+                // $tempfile = $img["tmp_name"];
+                // $uploaddir = 'assets/images/';
+                // $file = $uploaddir.$imgname;
+                // move_uploaded_file($tempfile, "$file");
                 
                 //creating connection 
-                $sql = "UPDATE form_entries SET id ='$id', fname='$fname', lname='$lname', dateOfBirth='$date', department='$department',  salary='$Salary', fonction='$fn' WHERE id='$j'";
-                    echo $sql;
+                $sql = "UPDATE form_entries SET fname='$fname', lname='$lname', dateOfBirth='$date', department='$department',  salary='$Salary', fonction='$fn' WHERE id='$i'";
+                echo $sql;
                 if ($con->query($sql) === TRUE) {
-                        echo "Record updated successfully";
-                    } else {
-                        echo "Error updating record: " . $conn->error;
-                    }
+                    echo "Record updated successfully";
+                } else {
+                    echo "Error updating record: " . $conn->error;
+                }
                 
-                    // header("Location: employees.php"); 
-                    // exit(); 
+                header("Location: employees.php"); 
+                exit(); 
+
                 //connection closed.
                 mysqli_close($con);
+                
+            }
             
-        }
             
             
+            
+            
+            if (mysqli_num_rows($query) > 0) {
+                ?>
 
-
-
-if (mysqli_num_rows($query) > 0) {
-    ?>
-
-<label >registration number</label>
-            <input name="id" class="registration number form-control" type="text" placeholder="Enter the registration number" value="<?php echo $row["id"]; ?>" >
-            <label >First Name</label>
-            <input name="fname" class="fname form-control" type="text" placeholder="Enter the First Name" value="<?php echo $row["fname"]; ?>" required>
-            <label >Last Name</label>
-            <input name="lname"  class="lname form-control" type="text" placeholder="Enter the Last Name" value="<?php echo $row["lname"]; ?>" required>
-            <label >Date Of Birth</label>
-            <input name="date" class="date form-control" type="date" value="<?php echo $row["dateOfBirth"]; ?>" required> 
+<!-- <label >registration number</label>
+<input name="id" class="registration number form-control" type="text" placeholder="Enter the registration number" value="<?php echo $row["id"]; ?>" > -->
+<label >First Name</label>
+<input name="fname" class="fname form-control" type="text" placeholder="Enter the First Name" value="<?php echo $row["fname"]; ?>" required>
+<label >Last Name</label>
+<input name="lname"  class="lname form-control" type="text" placeholder="Enter the Last Name" value="<?php echo $row["lname"]; ?>" required>
+<label >Date Of Birth</label>
+<input name="date" class="date form-control" type="date" value="<?php echo $row["dateOfBirth"]; ?>" required> 
             <label >Department</label>
             <select name="department" class="depart form-control" required >
                 echo "<option value="<?php echo $row["department"]; ?>" selected disabled hidden><?php echo $row["department"]; ?></option>";
@@ -111,7 +121,7 @@ if (mysqli_num_rows($query) > 0) {
                 <label for="img">Select image:</label>
                 <input name="img" type="file" id="img" accept="image/*" >
                 <div class="d-flex justify-content-center ">
-                    <input type="submit" name="submit" class="btn btn-dark" value="submit" > 
+                    <button type="submit" name="submit" class="btn btn-dark" value="<?php echo $_REQUEST['edit'];?>" >submit </button>
                 </div>
             </form>
             <?php }?>
