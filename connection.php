@@ -3,8 +3,8 @@
         //establishing connection with the database
         //database details
        $host = "localhost";
-       $username = "formdb_user";
-       $password = "slayer101";
+       $username = "root";
+       $password = "";
        $dbname = "personnel";
        //creating connection 
        $con = mysqli_connect($host, $username, $password, $dbname);
